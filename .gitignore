@@ -1,0 +1,34 @@
+# Secretos, credenciales y tokens
+.env
+*.env
+.env.*
+*.token
+*token*
+*.key
+*.pem
+*.secret
+credentials*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Binarios
+bin/
+
+# Datos temporales, imágenes y descargas
+data/
+*.mp4
+!static/*.png
+
+# IDEs y SO
+.idea/
+.vscode/
+*.swp
+.DS_Store

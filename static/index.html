@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mealie Importer — Recetas desde TikTok, Instagram y Shorts</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍰</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/static/icon-192.png">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="/" class="brand">
+      <div class="brand-icon">🍰</div>
+      <div>
+        <div class="brand-title">Mealie Importer</div>
+        <div class="brand-subtitle">Vídeos a recetas en un clic</div>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <a id="navMealieLink" href="#" target="_blank" class="nav-link" title="Abrir Mealie">
+        Abrir Mealie ↗
+      </a>
+      <button id="settingsBtn" class="btn-icon" title="Configuración de Mealie">⚙️</button>
+      <button id="themeToggle" class="btn-icon" title="Cambiar tema">🌓</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Hero / Input Section -->
+    <section class="hero-card" id="inputSection">
+      <h1 class="hero-title">Añadir receta desde vídeo</h1>
+      <p class="hero-desc">
+        Pega el enlace de un vídeo de Instagram o TikTok. El sistema extraerá la imagen, ingredientes, pasos y tiempos para que los revises antes de guardarlos.
+      </p>
+
+      <form class="url-form" id="extractForm">
+        <input 
+          type="url" 
+          id="urlInput" 
+          class="url-input" 
+          placeholder="https://www.instagram.com/p/... o https://www.tiktok.com/@.../video/..." 
+          required 
+          autocomplete="off"
+        />
+        <button type="submit" class="btn-primary" id="btnExtract">
+          <span id="btnExtractText">Analizar receta</span>
+          <span id="btnExtractSpinner" class="spinner hidden"></span>
+        </button>
+      </form>
+
+      <div class="badges-bar">
+        <span>Soportado:</span>
+        <span class="badge">📸 Instagram Reels</span>
+        <span class="badge">🎵 TikTok</span>
+        <span class="badge">🔴 YouTube Shorts</span>
+      </div>
+
+      <div id="extractError" class="badge hidden" style="margin-top:14px; background:var(--err-bg); color:var(--err-fg); border-color:var(--err-fg); padding:8px 12px; width:100%; border-radius:var(--radius-sm);"></div>
+    </section>
+
+    <!-- Questions / Doubts Section (aparece si hay sugerencias o alimentos nuevos) -->
+    <section class="questions-card hidden" id="questionsSection">
+      <div class="questions-header">
+        <span>⚠️</span>
+        <span>Revisión de ingredientes y equivalencias</span>
+      </div>
+      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:12px;">
+        Hemos detectado algunos alimentos que requieren tu confirmación para no crear ingredientes duplicados en Mealie:
+      </p>
+      <div id="questionsList"></div>
+    </section>
+
+    <!-- Review Section -->
+    <section class="review-card hidden" id="reviewSection">
+      <div class="review-grid">
+        <!-- Thumbnail -->
+        <div class="recipe-img-container">
+          <div class="recipe-img-box">
+            <img id="previewImg" class="recipe-img" src="" alt="Portada del vídeo" />
+          </div>
+          <button type="button" class="btn-sm btn-sm-secondary" id="btnChangeImage" style="width:100%; margin-top:8px;">
+            Cambiar foto 📷
+          </button>
+          <input type="file" id="fileImageInput" accept="image/png,image/jpeg,image/webp" class="hidden" />
+        </div>
+
+        <!-- Meta fields -->
+        <div class="fields-grid">
+          <div class="form-group">
+            <label for="recipeTitle">Título de la receta</label>
+            <input type="text" id="recipeTitle" class="form-input" style="font-weight:700; font-size:1.1rem;" required />
+          </div>
+
+          <div class="row-inline">
+            <div class="form-group">
+              <label for="recipeYield">Raciones / Molde</label>
+              <input type="text" id="recipeYield" class="form-input" placeholder="ej. 1 molde, 8 raciones" />
+            </div>
+            <div class="form-group">
+              <label for="recipeCookTime">Tiempo cocción</label>
+              <input type="text" id="recipeCookTime" class="form-input" placeholder="ej. 50 minutos" />
+            </div>
+            <div class="form-group">
+              <label for="recipePrepTime">Tiempo preparación</label>
+              <input type="text" id="recipePrepTime" class="form-input" placeholder="ej. 20 minutos" />
+            </div>
+          </div>
+
+          <div class="row-inline">
+            <div class="form-group">
+              <label for="recipeCategories">Categorías (separadas por coma)</label>
+              <input type="text" id="recipeCategories" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label for="recipeTags">Etiquetas (separadas por coma)</label>
+              <input type="text" id="recipeTags" class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="recipeSource">Fuente original</label>
+            <input type="text" id="recipeSource" class="form-input" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Ingredients Section -->
+      <div class="section-title">
+        <span>Ingredientes</span>
+        <button type="button" class="btn-sm btn-sm-secondary" id="btnAddIngredient">+ Añadir ingrediente</button>
+      </div>
+
+      <div class="ing-row header">
+        <span>Sección</span>
+        <span>Cantidad</span>
+        <span>Unidad</span>
+        <span>Alimento (Mealie)</span>
+        <span>Nota</span>
+        <span></span>
+      </div>
+
+      <div id="ingredientsList" class="ingredients-list"></div>
+
+      <!-- Instructions Section -->
+      <div class="section-title" style="margin-top:32px;">
+        <span>Pasos de elaboración</span>
+        <button type="button" class="btn-sm btn-sm-secondary" id="btnAddStep">+ Añadir paso</button>
+      </div>
+
+      <div id="instructionsList" class="instructions-list"></div>
+
+      <!-- Notes Section -->
+      <div class="section-title" style="margin-top:32px;">
+        <span>Notas adicionales / Consejos</span>
+      </div>
+      <div class="form-group">
+        <textarea id="recipeNotes" class="form-textarea" rows="3" placeholder="Consejos, preguntas o despedida del creador..."></textarea>
+      </div>
+
+      <!-- Footer Action Bar -->
+      <div class="submit-bar">
+        <label class="check-label">
+          <input type="checkbox" id="checkUpdate" />
+          <span>Actualizar si ya existe una receta con este nombre</span>
+        </label>
+
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn-secondary" id="btnCancel">Descartar</button>
+          <button type="button" class="btn-primary" id="btnImport">
+            <span id="btnImportText">Añadir a Mealie</span>
+            <span id="btnImportSpinner" class="spinner hidden"></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Historial de recetas recientes -->
+    <section class="history-card hidden" id="historySection">
+      <div class="history-header">
+        <h2 style="font-size:1.1rem; font-weight:700; color:var(--heading);">Recetas importadas recientemente</h2>
+        <span style="font-size:0.8rem; color:var(--muted);">Últimas recetas añadidas a Mealie</span>
+      </div>
+      <div class="history-grid" id="historyGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- Modal Éxito -->
+  <div class="modal-overlay hidden" id="successModal">
+    <div class="modal-card">
+      <div class="modal-icon">✓</div>
+      <h2 class="modal-title" id="modalTitle">¡Receta guardada!</h2>
+      <p class="modal-desc" id="modalDesc">La receta se ha importado correctamente a tu recetario de Mealie.</p>
+      <div class="modal-buttons">
+        <button type="button" class="btn-secondary" id="btnNewRecipe">Añadir otro vídeo</button>
+        <a id="btnOpenMealie" href="#" target="_blank" class="btn-primary" style="text-decoration:none;">Abrir en Mealie ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Configuración -->
+  <div class="modal-overlay hidden" id="settingsModal">
+    <div class="modal-card" style="text-align:left; max-width:520px;">
+      <h2 class="modal-title" style="margin-bottom:12px;">⚙️ Conexión con Mealie</h2>
+      <p class="modal-desc" style="margin-bottom:18px;">
+        Configura la URL de tu servidor Mealie y el Token API. Se guardan localmente en tu volumen de datos sin exponerse en git.
+      </p>
+
+      <form id="settingsForm" style="display:flex; flex-direction:column; gap:14px;">
+        <div class="form-group">
+          <label for="cfgMealieUrl">URL de Mealie</label>
+          <input type="url" id="cfgMealieUrl" class="form-input" placeholder="http://192.168.1.50:9000 o https://tu-mealie.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="cfgMealieToken">API Token (Bearer Token)</label>
+          <input type="password" id="cfgMealieToken" class="form-input" placeholder="Pega tu token o déjalo vacío si ya está configurado" />
+          <small id="tokenStatusText" style="font-size:0.78rem; color:var(--muted); margin-top:2px;"></small>
+        </div>
+
+        <div id="settingsAlert" class="badge hidden" style="padding:8px 12px; width:100%; border-radius:var(--radius-sm);"></div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button type="button" class="btn-secondary" id="btnCloseSettings">Cerrar</button>
+          <button type="button" class="btn-secondary" id="btnTestConn">Probar conexión</button>
+          <button type="submit" class="btn-primary" id="btnSaveSettings">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <datalist id="mealieFoodsList"></datalist>
+  <datalist id="mealieUnitsList"></datalist>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
