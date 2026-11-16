@@ -496,6 +496,12 @@ header {
   border-top: 1px solid var(--border);
   padding-top: 20px;
   margin-top: 24px;
+  gap: 16px;
+}
+
+.submit-actions {
+  display: flex;
+  gap: 10px;
 }
 
 .check-label {
@@ -673,16 +679,314 @@ header {
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 14px 12px;
+  }
+
+  header {
+    padding: 12px 16px;
+  }
+
+  .hero-card {
+    padding: 20px 16px;
+    margin-top: 14px;
+  }
+
+  .hero-title {
+    font-size: 1.25rem;
+  }
+
+  .hero-desc {
+    font-size: 0.88rem;
+    margin-bottom: 16px;
+  }
+
   .url-form {
     flex-direction: column;
+    gap: 10px;
   }
+
+  .url-input {
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+
+  .btn-primary {
+    justify-content: center;
+  }
+
+  .badges-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* Review Section */
+  .review-card {
+    padding: 18px 14px;
+    margin-top: 16px;
+  }
+
   .review-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
+
+  .recipe-img-container {
+    align-items: center;
+    width: 100%;
+  }
+
   .recipe-img-box {
-    max-height: 220px;
+    width: 180px;
+    max-height: none;
+    aspect-ratio: 9/16;
+    margin: 0 auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   }
-  .ing-row {
+
+  #btnChangeImage {
+    max-width: 180px;
+    margin: 8px auto 0;
+  }
+
+  .row-inline {
     grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .form-input, .form-textarea, .form-select {
+    font-size: 16px; /* Previene auto-zoom molesto en iOS */
+  }
+
+  .section-title {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0 10px;
+    font-size: 1.05rem;
+  }
+
+  .section-title .btn-sm {
+    margin-left: auto;
+  }
+
+  /* Ingredients Table Redesign for Mobile */
+  .ing-row.header {
+    display: none !important;
+  }
+
+  .ing-row {
+    display: grid;
+    grid-template-columns: 75px 85px 1fr 38px;
+    grid-template-areas:
+      "qty unit food del"
+      "sec sec  note note";
+    gap: 8px;
+    background: var(--surface-2);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    align-items: center;
+  }
+
+  .ing-section {
+    grid-area: sec;
+    background: var(--surface);
+    font-size: 0.85rem;
+    padding: 8px 10px;
+  }
+
+  .ing-qty {
+    grid-area: qty;
+    background: var(--surface);
+    font-weight: 700;
+    text-align: center;
+    padding: 8px 6px;
+  }
+
+  .ing-unit {
+    grid-area: unit;
+    background: var(--surface);
+    padding: 8px 8px;
+  }
+
+  .ing-food {
+    grid-area: food;
+    background: var(--surface);
+    font-weight: 600;
+    padding: 8px 10px;
+  }
+
+  .ing-note {
+    grid-area: note;
+    background: var(--surface);
+    font-size: 0.85rem;
+    padding: 8px 10px;
+  }
+
+  .btn-del {
+    grid-area: del;
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+  }
+
+  /* Instructions */
+  .inst-row {
+    gap: 8px;
+  }
+
+  .inst-num {
+    width: 22px;
+    font-size: 0.9rem;
+    padding-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .inst-textarea {
+    font-size: 16px;
+    min-height: 52px;
+  }
+
+  /* Questions */
+  .questions-card {
+    padding: 16px 14px;
+  }
+
+  .question-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .question-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .question-actions button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  /* Submit Bar */
+  .submit-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .check-label {
+    font-size: 0.85rem;
+  }
+
+  .submit-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .submit-actions .btn-secondary,
+  .submit-actions .btn-primary {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 12px;
+  }
+
+  /* History */
+  .history-card {
+    padding: 18px 14px;
+    margin-top: 20px;
+  }
+
+  .history-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  /* Modals */
+  .modal-card {
+    padding: 24px 16px;
+    width: 95%;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .modal-buttons button,
+  .modal-buttons a {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  #settingsModal .modal-card {
+    padding: 20px 14px;
+  }
+
+  #settingsModal form > div:last-child {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  #settingsModal form button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 10px 12px;
+  }
+
+  .brand-title {
+    font-size: 1.05rem;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .nav-link-text {
+    display: none;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+  }
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .row-inline {
+    grid-template-columns: 1fr;
+  }
+
+  .ing-row {
+    grid-template-columns: 65px 75px 1fr 36px;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .submit-actions {
+    grid-template-columns: 1fr;
   }
 }
