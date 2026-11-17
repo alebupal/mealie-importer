@@ -45,19 +45,53 @@ def bake_time(steps):
 
 def deduce_category(title: str, text: str):
     lower = f"{title} {text}".lower()
-    if "cheesecake" in lower or "tarta de queso" in lower:
-        return ["Cheesecakes"]
-    if "cookie" in lower or "galleta" in lower or "brookie" in lower or "crookie" in lower:
-        return ["Cookies"]
-    if "tarta" in lower or "cake" in lower or "pastel" in lower:
-        return ["Tartas y pasteles"]
-    if "brownie" in lower:
-        return ["Brownies"]
-    if "bizcocho" in lower or "muffin" in lower or "magdalena" in lower:
-        return ["Bizcochos"]
-    if "pan" in lower or "brioche" in lower:
-        return ["Panadería"]
-    return ["Postres"]
+    title_lower = title.lower()
+    cats = []
+
+    # Prioridad si el título especifica el tipo de elaboración
+    if any(k in title_lower for k in ["cookie", "galleta", "brookie", "crookie"]):
+        cats.append("Cookies")
+    elif any(k in title_lower for k in ["dónut", "donut", "berlina", "croissant", "brioche", "cinnamon roll", "bollo"]):
+        cats.append("Bollería")
+    elif "cheesecake" in lower or "tarta de queso" in lower:
+        cats.append("Cheesecakes")
+    elif "cookie" in lower or "galleta" in lower or "brookie" in lower or "crookie" in lower:
+        cats.append("Cookies")
+    elif any(k in lower for k in ["dónut", "donut", "berlina", "croissant", "brioche", "cinnamon roll", "bollo"]):
+        cats.append("Bollería")
+    elif "brownie" in lower:
+        cats.append("Brownies")
+    elif "tarta" in lower or "cake" in lower or "pastel" in lower:
+        cats.append("Tartas y pasteles")
+    elif "bizcocho" in lower or "muffin" in lower or "magdalena" in lower:
+        cats.append("Bizcochos")
+    elif "pan" in lower:
+        cats.append("Panadería")
+    else:
+        cats.append("Postres")
+
+    # Detección de relleno para cookies, bollería o recetas explícitas
+    is_filled = False
+    if "rellen" in title_lower:
+        is_filled = True
+    elif "Cookies" in cats or "Bollería" in cats:
+        if any(k in lower for k in [
+            "rellen",
+            "para el relleno",
+            "corazón de",
+            "núcleo de",
+            "bola congelada",
+            "disco congelado",
+            "congelar el relleno",
+            "meter en el centro",
+            "cerrar la bola",
+        ]):
+            is_filled = True
+
+    if is_filled and "Rellenas" not in cats:
+        cats.append("Rellenas")
+
+    return cats
 
 
 def parse_recipe_from_info(info: dict) -> dict:
@@ -85,11 +119,15 @@ def parse_recipe_from_info(info: dict) -> dict:
     if clean_title.isupper():
         clean_title = clean_title.title()
 
+    categories = deduce_category(clean_title, text)
+
     tags = []
     if author:
         tags.append(author.lower())
     if platform:
         tags.append(platform.lower())
+    if "Rellenas" in categories:
+        tags.append("rellena")
 
     recipe = {
         "name": clean_title,
@@ -99,7 +137,7 @@ def parse_recipe_from_info(info: dict) -> dict:
         "cookTime": None,
         "totalTime": None,
         "tags": list(dict.fromkeys(tags)),
-        "categories": deduce_category(clean_title, text),
+        "categories": categories,
         "source": f"{platform.capitalize()} — @{author}" if author else platform.capitalize(),
         "orgURL": url,
         "author": author,
